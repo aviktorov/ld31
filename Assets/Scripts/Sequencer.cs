@@ -105,10 +105,10 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			Instrument instrument = instruments[i];
 			SequencerRow row = instrument_rows[i];
 			
-			if(!row.data[i]) continue;
-			if(row.played[i]) continue;
+			if(!row.data[step]) continue;
+			if(row.played[step]) continue;
 			
-			row.played[i] = true;
+			row.played[step] = true;
 			AudioClip sound = instrument.GetRandomSound();
 			
 			if(sound == null) continue;
