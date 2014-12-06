@@ -34,7 +34,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	// data
 	public int bpm = 120;
 	public int steps = 16;
-	public Instrument[] instruments;
+	public Instrument[] instruments = null;
 	
 	public Color[] colors = new Color[] {
 		Color.red,
