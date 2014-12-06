@@ -8,7 +8,7 @@ namespace UnityEngine {
             var initialPosition = other.anchoredPosition;
             var initialSize = other.sizeDelta;
 
-            other.parent = xf;
+            other.SetParent(xf);
 
             other.anchoredPosition = initialPosition;
             other.sizeDelta = initialSize;
