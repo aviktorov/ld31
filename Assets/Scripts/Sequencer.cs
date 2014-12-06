@@ -59,6 +59,17 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		instrument_rows[instrument].played[step] = false;
 	}
 	
+	public float GetProgress() {
+		return Mathf.Clamp01(current_time / steps);
+	}
+	
+	public Color GetCurrentColor(float time) {
+		if(colors.Length == 0) return Color.black;
+		
+		int step = (int)Mathf.Floor(time / colors.Length);
+		return colors[step % colors.Length];
+	}
+	
 	// methods
 	private void Awake() {
 		current_time = 0.0f;
@@ -76,10 +87,10 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		
 		// step
 		current_time += Time.deltaTime * (bpm / 60.0f);
-		int step = (int)Mathf.Floor(current_time / colors.Length);
+		int step = (int)Mathf.Floor(current_time);
 		
 		while(step >= steps) {
-			current_time -= steps * (60.0f / bpm);
+			current_time -= steps;
 			step -= steps;
 			
 			foreach(SequencerRow row in instrument_rows) {
@@ -103,12 +114,5 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			if(sound == null) continue;
 			cached_audio.PlayOneShot(sound);
 		}
-	}
-	
-	public Color GetCurrentColor() {
-		if(colors.Length == 0) return Color.black;
-		
-		int step = (int)Mathf.Floor(current_time / colors.Length);
-		return colors[step % colors.Length];
 	}
 }
