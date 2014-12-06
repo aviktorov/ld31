@@ -63,10 +63,10 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		return Mathf.Clamp01(current_time / steps);
 	}
 	
-	public Color GetCurrentColor(float time) {
+	public Color GetStepColor(int time) {
 		if(colors.Length == 0) return Color.black;
 		
-		int step = (int)Mathf.Floor(time / colors.Length);
+		int step = time / colors.Length;
 		return colors[step % colors.Length];
 	}
 	
