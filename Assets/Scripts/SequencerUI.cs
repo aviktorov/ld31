@@ -73,8 +73,9 @@ public class SequencerUI : MonoBehaviour {
 				toggle.isOn = false;
 				toggle.onValueChanged.AddListener((unused) => Sequencer.instance.ToggleStep(data.instrument,data.step));
 				
+				Color step_color = GameLogic.instance.GetStepColor(j,num_steps);
 				ColorBlock colors = toggle.colors;
-				colors.normalColor = GameLogic.instance.GetStepColor(j,num_steps);
+				colors.normalColor = step_color.WithA(colors.normalColor.a);
 				toggle.colors = colors;
 			}
 		}

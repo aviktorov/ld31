@@ -37,6 +37,8 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	// data
 	public int bpm = 120;
 	public int steps = 16;
+	public int rows_per_mob = 4;
+	
 	public Instrument[] instruments = null;
 	
 	// components
@@ -69,13 +71,13 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		int num_instruments = instruments.Length;
 		
 		if((steps > 0) && (num_mobs > 0)) {
-			sequencer_rows = new SequencerRow[num_mobs];
-			for(int i = 0; i < num_mobs; i++) {
+			sequencer_rows = new SequencerRow[num_mobs * rows_per_mob];
+			for(int i = 0; i < num_mobs * rows_per_mob; i++) {
 				sequencer_rows[i] = new SequencerRow() { 
 					data = new bool[steps],
 					played = new bool[steps],
 					instrument = (num_instruments > 0) ? instruments[i % num_instruments] : null,
-					sprite = GameLogic.instance.mob_sprites[i]
+					sprite = GameLogic.instance.mob_sprites[i / rows_per_mob]
 				};
 			}
 		}
