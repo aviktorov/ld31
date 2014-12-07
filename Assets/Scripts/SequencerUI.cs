@@ -12,6 +12,9 @@ public class SequencerUI : MonoSingleton<SequencerUI> {
 	public GameObject bar;
 	public GameObject icon;
 	
+	public float ghost_alpha = 0.3f;
+	public Sprite ghost_sprite = null;
+	
 	// components
 	private RectTransform cached_transform;
 	
@@ -25,8 +28,20 @@ public class SequencerUI : MonoSingleton<SequencerUI> {
 	public void ToggleNote(int id) {
 		if(grid.ContainsKey(id) == false) return;
 		
+		SetGhostNote(id,false);
+		
 		Toggle toggle = grid[id];
 		toggle.isOn = !toggle.isOn;
+	}
+	
+	public void SetGhostNote(int id,bool enabled) {
+		if(grid.ContainsKey(id) == false) return;
+		
+		Toggle toggle = grid[id];
+		Image checkmark = toggle.graphic as Image;
+		
+		float new_alpha = (enabled) ? ghost_alpha : 1.0f;
+		checkmark.color = checkmark.color.WithA(new_alpha);
 	}
 	
 	// functions

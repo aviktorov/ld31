@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 internal class Note {
+	public int id;
 	public int lifetime;
 	public bool ghost;
 }
@@ -99,7 +100,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		}
 		// new note
 		else {
-			Note note = new Note() { lifetime = max_ghost_note_lifetime, ghost = false };
+			Note note = new Note() { id = id, lifetime = max_ghost_note_lifetime, ghost = false };
 			
 			notes.Add(id,note);
 			active_notes.Add(note);
@@ -110,6 +111,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			last.ghost = true;
 			
 			active_notes.RemoveAt(0);
+			SequencerUI.instance.SetGhostNote(last.id,true);
 		}
 	}
 	
