@@ -15,6 +15,7 @@ public class Mob : MonoBehaviour {
 	private Rigidbody2D cached_body;
 	private Transform cached_transform;
 	private SpriteRenderer cached_renderer;
+	private ParticleSystem cached_particles;
 	
 	// runtime
 	private bool base_hit;
@@ -26,11 +27,16 @@ public class Mob : MonoBehaviour {
 		cached_body = GetComponent<Rigidbody2D>();
 		cached_transform = GetComponent<Transform>();
 		cached_renderer = GetComponent<SpriteRenderer>();
+		cached_particles = GetComponentInChildren<ParticleSystem>();
 	}
 	
 	private void Start() {
-		cached_renderer.color = GameLogic.instance.GetRandomColor();
+		Color color = GameLogic.instance.GetRandomColor();
+		
+		cached_renderer.color = color;
 		cached_renderer.sprite = GameLogic.instance.GetRandomMobSprite();
+		
+		cached_particles.startColor = color;
 	}
 	
 	private void Update() {
