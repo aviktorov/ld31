@@ -15,14 +15,20 @@ internal struct Segment {
 public class LightningGeometry : MonoBehaviour {
 	
 	// data
+	public Color color = Color.white;
 	public int generations = 5;
 	public float width = 0.2f;
 	public float randomOffset = 1.0f;
+	public float lifetime = 1.0f;
+	public float smoothness = 3.0f;
 	public Transform target = null;
 	
 	// components
 	private LineRenderer cached_renderer;
 	private Transform cached_transform;
+	
+	// runtime
+	private float current_time;
 	
 	// interface
 	void GenerateGeometry() {
@@ -47,6 +53,7 @@ public class LightningGeometry : MonoBehaviour {
 			}
 		}
 		
+		cached_renderer.SetColors(color,color);
 		cached_renderer.SetWidth(width,width);
 		cached_renderer.SetVertexCount(segments.Count + 1);
 		
@@ -65,6 +72,19 @@ public class LightningGeometry : MonoBehaviour {
 	}
 	
 	private void Start() {
+		current_time = lifetime;
+		Invoke("Kill",lifetime);
+	}
+	
+	private void Update() {
 		GenerateGeometry();
+		
+		current_time -= Time.deltaTime;
+		color = color.WithA(Mathf.Pow(Mathf.Clamp01(current_time / lifetime),smoothness));
+	}
+	
+	// events
+	private void Kill() {
+		Destroy(gameObject);
 	}
 }
