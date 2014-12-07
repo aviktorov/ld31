@@ -36,13 +36,6 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	public int steps = 16;
 	public Instrument[] instruments = null;
 	
-	public Color[] colors = new Color[] {
-		Color.red,
-		Color.green,
-		Color.blue,
-		Color.yellow,
-	};
-	
 	// components
 	private AudioSource cached_audio;
 	
@@ -61,13 +54,6 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	
 	public float GetProgress() {
 		return Mathf.Clamp01(current_time / steps);
-	}
-	
-	public Color GetStepColor(int time) {
-		if(colors.Length == 0) return Color.black;
-		
-		int step = time / colors.Length;
-		return colors[step % colors.Length];
 	}
 	
 	// methods
