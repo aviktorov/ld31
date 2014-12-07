@@ -35,7 +35,7 @@ public class SequencerRow {
 public class Sequencer : MonoSingleton<Sequencer> {
 	
 	// data
-	public int bpm = 120;
+	public int tempo = 120;
 	public int steps = 16;
 	public int rows_per_mob = 4;
 	
@@ -50,7 +50,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	private float current_time;
 	
 	// getters/setters/togglers
-	public void ToggleStep(int row,int step) {
+	public void ToggleNote(int row,int step) {
 		if(row < 0 || row >= sequencer_rows.Length) return;
 		if(step < 0 || step >= steps) return;
 		
@@ -60,6 +60,10 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	
 	public float GetProgress() {
 		return Mathf.Clamp01(current_time / steps);
+	}
+	
+	public Sprite GetRowSprite(int row) {
+		return sequencer_rows[row].sprite;
 	}
 	
 	// methods
@@ -86,7 +90,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	private void Update() {
 		
 		// step
-		current_time += Time.deltaTime * (bpm / 60.0f);
+		current_time += Time.deltaTime * (tempo / 60.0f);
 		int step = (int)Mathf.Floor(current_time);
 		
 		while(step >= steps) {
@@ -96,6 +100,8 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			foreach(SequencerRow row in sequencer_rows) {
 				row.Reset();
 			}
+			
+			GameLogic.instance.OnSequencerBar();
 		}
 		
 		// play instruments
@@ -106,10 +112,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			if(row.played[step]) continue;
 			
 			row.played[step] = true;
-			
-			Color kill_color = GameLogic.instance.GetStepColor(step,steps);
-			Sprite kill_sprite = row.sprite;
-			GameLogic.instance.KillMobs(kill_sprite,kill_color);
+			GameLogic.instance.OnSequencerNote(i,step);
 			
 			if(row.instrument == null) continue;
 			AudioClip sound = row.instrument.GetRandomSound();

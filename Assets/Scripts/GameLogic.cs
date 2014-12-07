@@ -2,7 +2,13 @@
 using System.Collections;
 using System.Collections.Generic;
 
+internal class Note {
+	public int lifetime;
+	public bool ghost;
+}
 
+/*
+ */
 public class GameLogic : MonoSingleton<GameLogic> {
 	
 	// data
@@ -11,6 +17,8 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	public Sprite[] mob_sprites = null;
 	public float spawn_interval = 1.0f;
 	public float spawn_radius = 10.0f;
+	public int max_active_notes = 3;
+	public int max_ghost_note_lifetime = 2;
 	
 	public Color[] colors = new Color[] {
 		Color.red,
@@ -22,6 +30,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	// runtime
 	private float current_time;
 	private Transform base_transform;
+	private Dictionary<int,Note> notes;
 	
 	// getters
 	public Color GetStepColor(int time,int steps) {
@@ -66,14 +75,48 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			
 			if(lightning_prefab == null) continue;
 			GameObject lightning = GameObject.Instantiate(lightning_prefab,base_transform.position,Quaternion.identity) as GameObject;
-				
+			
 			LightningGeometry lightning_geometry = lightning.GetComponent<LightningGeometry>();
 			if(lightning_geometry == null) continue;
 			
 			lightning_geometry.target = mobs[i].transform;
 			
-			// Hope it'll be destroyed one frame later
+			// hope it'll be destroyed one frame later
 			Destroy(mobs[i]);
+		}
+	}
+	
+	public void ToggleNote(int row,int step) {
+		Sequencer.instance.ToggleNote(row,step);
+		
+		int num_steps = Sequencer.instance.steps;
+		int id = row * num_steps + step;
+		
+		// count active nodes
+		// TODO: better last active node search
+		int num_active_notes = 0;
+		Note last_active = null;
+		foreach(Note note in notes.Values) {
+			if(note.ghost) continue;
+			if(last_active == null) last_active = note;
+			
+			num_active_notes++;
+		}
+		
+		// existing note
+		if(notes.ContainsKey(id)) {
+			notes.Remove(id);
+		}
+		// new note
+		else {
+			Note note = new Note() { lifetime = max_ghost_note_lifetime, ghost = false };
+			num_active_notes++;
+			
+			notes.Add(id,note);
+		}
+		
+		if(num_active_notes > max_active_notes) {
+			last_active.ghost = true;
 		}
 	}
 	
@@ -86,9 +129,45 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		// TODO: base health
 	}
 	
+	public void OnSequencerBar() {
+		List<int> remove_list = new List<int>();
+		
+		// ghost lifetime
+		foreach(int id in notes.Keys) {
+			Note note = notes[id];
+			
+			if(note.ghost == false) continue;
+			note.lifetime--;
+			
+			if(note.lifetime > 0) continue;
+			remove_list.Add(id);
+		}
+		
+		// note cleanup
+		foreach(int id in remove_list) {
+			SequencerUI.instance.ToggleNote(id);
+		}
+	}
+	
+	public void OnSequencerNote(int row,int step) {
+		int num_steps = Sequencer.instance.steps;
+		int id = row * num_steps + step;
+		
+		if(notes.ContainsKey(id) == false) return;
+		
+		Note note = notes[id];
+		if(note.ghost) return;
+		
+		Color kill_color = GetStepColor(step,num_steps);
+		Sprite kill_sprite = Sequencer.instance.GetRowSprite(row);
+		
+		KillMobs(kill_sprite,kill_color);
+	}
+	
 	// functions
 	private void Awake() {
 		current_time = 0.0f;
+		notes = new Dictionary<int,Note>();
 	}
 	
 	private void Start() {

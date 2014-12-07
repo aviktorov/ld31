@@ -1,27 +1,38 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
+using System.Collections.Generic;
 
 /*
  */
-public class SequencerUI : MonoBehaviour {
+public class SequencerUI : MonoSingleton<SequencerUI> {
 	
 	// data
 	public GameObject button;
 	public GameObject bar;
 	public GameObject icon;
 	
+	// components
+	private RectTransform cached_transform;
+	
 	// runtime
 	private float button_width;
 	private float button_height;
 	private RectTransform bar_transform;
+	private Dictionary<int,Toggle> grid;
 	
-	// components
-	private RectTransform cached_transform;
+	// interface
+	public void ToggleNote(int id) {
+		if(grid.ContainsKey(id) == false) return;
+		
+		Toggle toggle = grid[id];
+		toggle.isOn = !toggle.isOn;
+	}
 	
 	// functions
 	private void Awake() {
 		cached_transform = GetComponent<RectTransform>();
+		grid = new Dictionary<int,Toggle>();
 	}
 	
 	private void Start() {
@@ -68,15 +79,18 @@ public class SequencerUI : MonoBehaviour {
 				Toggle toggle = runtime.GetComponent<Toggle>();
 				if(toggle == null) continue;
 				
-				var data = new { instrument = i, step = j }; // hack hack hack
+				var data = new { row = i, step = j }; // hack hack hack
 				
 				toggle.isOn = false;
-				toggle.onValueChanged.AddListener((unused) => Sequencer.instance.ToggleStep(data.instrument,data.step));
+				toggle.onValueChanged.AddListener((unused) => GameLogic.instance.ToggleNote(data.row,data.step));
 				
 				Color step_color = GameLogic.instance.GetStepColor(j,num_steps);
 				ColorBlock colors = toggle.colors;
 				colors.normalColor = step_color.WithA(colors.normalColor.a);
 				toggle.colors = colors;
+				
+				int id = i * num_steps + j;
+				grid.Add(id,toggle);
 			}
 		}
 		
