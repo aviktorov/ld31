@@ -20,6 +20,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	public float spawn_radius = 10.0f;
 	public int max_active_notes = 3;
 	public int max_ghost_note_lifetime = 2;
+	public int max_mob_moves = 10;
 	public bool game_over = false;
 	
 	public Color[] colors = new Color[] {

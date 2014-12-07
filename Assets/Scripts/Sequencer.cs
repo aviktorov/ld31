@@ -90,7 +90,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	private void Update() {
 		
 		// step
-		current_time += Time.deltaTime * (tempo / 60.0f);
+		current_time += Time.deltaTime * (tempo * 4.0f / 60.0f);
 		int step = (int)Mathf.Floor(current_time);
 		
 		while(step >= steps) {
@@ -114,11 +114,13 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			row.played[step] = true;
 			GameLogic.instance.OnSequencerNote(i,step);
 			
-			if(row.instrument == null) continue;
-			AudioClip sound = row.instrument.GetRandomSound();
+			Instrument instrument = row.instrument;
+			if(instrument == null) continue;
 			
+			AudioClip sound = instrument.GetRandomSound();
 			if(sound == null) continue;
-			cached_audio.PlayOneShot(sound);
+			
+			cached_audio.PlayOneShot(sound,instrument.volume);
 		}
 	}
 }

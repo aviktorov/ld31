@@ -8,7 +8,6 @@ using System.Collections;
 public class Mob : MonoBehaviour {
 	
 	// data
-	public float speed = 5.0f;
 	public GameObject death_fx = null;
 	
 	// components
@@ -47,6 +46,15 @@ public class Mob : MonoBehaviour {
 		
 		GameObject player_base = GameObject.FindWithTag("Player");
 		if(player_base == null) return;
+		
+		CircleCollider2D player_collider = player_base.GetComponentInChildren<CircleCollider2D>();
+		if(player_collider == null) return;
+		
+		int tempo = Sequencer.instance.tempo;
+		int max_moves = GameLogic.instance.max_mob_moves;
+		float radius = GameLogic.instance.spawn_radius;
+		
+		float speed = ((radius - player_collider.radius) / max_moves) * (60.0f / tempo);
 		
 		Vector3 direction = (player_base.transform.position - cached_transform.position).normalized;
 		cached_body.velocity = direction * speed;
