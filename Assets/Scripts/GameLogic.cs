@@ -20,6 +20,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	public float spawn_radius = 10.0f;
 	public int max_active_notes = 3;
 	public int max_ghost_note_lifetime = 2;
+	public bool game_over = false;
 	
 	public Color[] colors = new Color[] {
 		Color.red,
@@ -121,7 +122,11 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	}
 	
 	public void OnBaseHit() {
-		// TODO: base health
+		GameObject.Destroy(base_transform.gameObject);
+		game_over = true;
+		
+		DialogUI.instance.SetEnabled(true);
+		SequencerUI.instance.SetEnabled(false);
 	}
 	
 	public void OnSequencerBar() {

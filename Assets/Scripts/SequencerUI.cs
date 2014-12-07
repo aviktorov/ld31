@@ -44,6 +44,12 @@ public class SequencerUI : MonoSingleton<SequencerUI> {
 		checkmark.color = checkmark.color.WithA(new_alpha);
 	}
 	
+	public void SetEnabled(bool enabled) {
+		foreach(RectTransform child in cached_transform) {
+			child.gameObject.SetActive(enabled);
+		}
+	}
+	
 	// functions
 	private void Awake() {
 		cached_transform = GetComponent<RectTransform>();
@@ -120,6 +126,7 @@ public class SequencerUI : MonoSingleton<SequencerUI> {
 	
 	private void LateUpdate() {
 		if(bar == null) return;
+		if(GameLogic.instance.game_over) return;
 		
 		int half_steps = Sequencer.instance.steps / 2;
 		float x = Mathf.Lerp(-half_steps,half_steps,Sequencer.instance.GetProgress()) * button_width - button_width / 2;

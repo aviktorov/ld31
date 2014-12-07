@@ -41,6 +41,9 @@ public class Mob : MonoBehaviour {
 	
 	private void Update() {
 		if(cached_body == null) return;
+		cached_body.velocity = Vector3.zero;
+		
+		if(GameLogic.instance.game_over) return;
 		
 		GameObject player_base = GameObject.FindWithTag("Player");
 		if(player_base == null) return;
