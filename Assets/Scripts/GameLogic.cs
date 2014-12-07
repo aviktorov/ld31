@@ -31,6 +31,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	private float current_time;
 	private Transform base_transform;
 	private Dictionary<int,Note> notes;
+	private List<Note> active_notes;
 	
 	// getters
 	public Color GetStepColor(int time,int steps) {
@@ -92,17 +93,6 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		int num_steps = Sequencer.instance.steps;
 		int id = row * num_steps + step;
 		
-		// count active nodes
-		// TODO: better last active node search
-		int num_active_notes = 0;
-		Note last_active = null;
-		foreach(Note note in notes.Values) {
-			if(note.ghost) continue;
-			if(last_active == null) last_active = note;
-			
-			num_active_notes++;
-		}
-		
 		// existing note
 		if(notes.ContainsKey(id)) {
 			notes.Remove(id);
@@ -110,13 +100,16 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		// new note
 		else {
 			Note note = new Note() { lifetime = max_ghost_note_lifetime, ghost = false };
-			num_active_notes++;
 			
 			notes.Add(id,note);
+			active_notes.Add(note);
 		}
 		
-		if(num_active_notes > max_active_notes) {
-			last_active.ghost = true;
+		if(active_notes.Count > max_active_notes) {
+			Note last = active_notes[0];
+			last.ghost = true;
+			
+			active_notes.RemoveAt(0);
 		}
 	}
 	
@@ -168,6 +161,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	private void Awake() {
 		current_time = 0.0f;
 		notes = new Dictionary<int,Note>();
+		active_notes = new List<Note>();
 	}
 	
 	private void Start() {
