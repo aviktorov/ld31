@@ -54,6 +54,18 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		return mob;
 	}
 	
+	public void KillMobs(Color color) {
+		GameObject[] mobs = GameObject.FindGameObjectsWithTag("Mob");
+		
+		for(int i = mobs.Length - 1; i >= 0; i--) {
+			SpriteRenderer mob_renderer = mobs[i].GetComponent<SpriteRenderer>();
+			if(mob_renderer == null) continue;
+			if(mob_renderer.color != color) continue;
+			
+			Destroy(mobs[i]);
+		}
+	}
+	
 	// functions
 	private void Awake() {
 		current_time = 0.0f;

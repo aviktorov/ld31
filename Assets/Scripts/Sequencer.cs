@@ -29,6 +29,7 @@ public class SequencerRow {
 
 /*
  */
+[RequireComponent(typeof(AudioSource))]
 public class Sequencer : MonoSingleton<Sequencer> {
 	
 	// data
@@ -85,8 +86,6 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		}
 		
 		// play instruments
-		if(cached_audio == null) return;
-		
 		for(int i = 0; i < instruments.Length; i++) {
 			Instrument instrument = instruments[i];
 			SequencerRow row = instrument_rows[i];
@@ -95,6 +94,10 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			if(row.played[step]) continue;
 			
 			row.played[step] = true;
+			
+			Color kill_color = GameLogic.instance.GetStepColor(step);
+			GameLogic.instance.KillMobs(kill_color);
+			
 			AudioClip sound = instrument.GetRandomSound();
 			
 			if(sound == null) continue;
