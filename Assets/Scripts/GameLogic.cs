@@ -7,6 +7,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	
 	// data
 	public GameObject mob_prefab = null;
+	public GameObject lightning_prefab = null;
 	public Sprite[] mob_sprites = null;
 	public float spawn_interval = 1.0f;
 	public float spawn_radius = 10.0f;
@@ -63,6 +64,15 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			if(mob_renderer.color != color) continue;
 			if(mob_renderer.sprite != sprite) continue;
 			
+			if(lightning_prefab == null) continue;
+			GameObject lightning = GameObject.Instantiate(lightning_prefab,base_transform.position,Quaternion.identity) as GameObject;
+				
+			LightningGeometry lightning_geometry = lightning.GetComponent<LightningGeometry>();
+			if(lightning_geometry == null) continue;
+			
+			lightning_geometry.target = mobs[i].transform;
+			
+			// Hope it'll be destroyed one frame later
 			Destroy(mobs[i]);
 		}
 	}

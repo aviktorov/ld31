@@ -29,11 +29,12 @@ public class LightningGeometry : MonoBehaviour {
 	
 	// runtime
 	private float current_time;
+	private Vector3 last_position;
 	
 	// interface
 	void GenerateGeometry() {
 		List<Segment> segments = new List<Segment>();
-		segments.Add(new Segment() { start = cached_transform.position, end = target.position });
+		segments.Add(new Segment() { start = cached_transform.position, end = last_position });
 		
 		for(int generation = 0; generation < generations; generation++) {
 			int num_segments = segments.Count;
@@ -69,15 +70,19 @@ public class LightningGeometry : MonoBehaviour {
 	private void Awake() {
 		cached_renderer = GetComponent<LineRenderer>();
 		cached_transform = GetComponent<Transform>();
+		
 	}
 	
 	private void Start() {
 		current_time = lifetime;
+		if(target != null) last_position = target.position;
 		Invoke("Kill",lifetime);
 	}
 	
-	private void Update() {
+	private void LateUpdate() {
 		GenerateGeometry();
+		
+		if(target != null) last_position = target.position;
 		
 		current_time -= Time.deltaTime;
 		color = color.WithA(Mathf.Pow(Mathf.Clamp01(current_time / lifetime),smoothness));
