@@ -29,15 +29,18 @@ public class SequencerUI : MonoBehaviour {
 		
 		RectTransform button_transform = button.GetComponent<RectTransform>();
 		
-		int num_instruments = Sequencer.instance.instruments.Length;
+		int num_rows = Sequencer.instance.sequencer_rows.Length;
 		int num_steps = Sequencer.instance.steps;
 		
 		button_width = button_transform.rect.width;
 		button_height = button_transform.rect.height;
 		
+		// icons
+		// TODO: ui layout
+		
 		// toggles
-		for(int i = 0; i < num_instruments; i++) {
-			float y = button_height * (i - num_instruments / 2);
+		for(int i = 0; i < num_rows; i++) {
+			float y = button_height * (i - num_rows / 2);
 			
 			for(int j = 0; j < num_steps; j++) {
 				float x = button_width * (j - num_steps / 2);
@@ -57,7 +60,7 @@ public class SequencerUI : MonoBehaviour {
 				toggle.onValueChanged.AddListener((unused) => Sequencer.instance.ToggleStep(data.instrument,data.step));
 				
 				ColorBlock colors = toggle.colors;
-				colors.normalColor = GameLogic.instance.GetStepColor(j);
+				colors.normalColor = GameLogic.instance.GetStepColor(j,num_steps);
 				toggle.colors = colors;
 			}
 		}
@@ -65,7 +68,8 @@ public class SequencerUI : MonoBehaviour {
 		// bar
 		GameObject bar_runtime = GameObject.Instantiate(bar) as GameObject;
 		bar_transform = bar_runtime.transform as RectTransform;
-		bar_transform.sizeDelta = bar_transform.sizeDelta.WithY(num_instruments * button_height);
+		bar_transform.sizeDelta = bar_transform.sizeDelta.WithY(num_rows * button_height);
+		bar_transform.anchoredPosition = bar_transform.anchoredPosition.WithY(-button_height / 2);
 		
 		cached_transform.AddChild(bar_transform);
 	}

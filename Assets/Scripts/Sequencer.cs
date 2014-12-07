@@ -21,6 +21,8 @@ public class Instrument {
 public class SequencerRow {
 	public bool[] data;
 	public bool[] played;
+	public Instrument instrument;
+	public Sprite sprite;
 	
 	public void Reset() {
 		for(int i = 0; i < played.Length; i++) played[i] = false;
@@ -41,16 +43,17 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	private AudioSource cached_audio;
 	
 	// runtime
+	[System.NonSerialized]
+	public SequencerRow[] sequencer_rows;
 	private float current_time;
-	private SequencerRow[] instrument_rows;
 	
 	// getters/setters/togglers
-	public void ToggleStep(int instrument,int step) {
-		if(instrument < 0 || instrument >= instruments.Length) return;
+	public void ToggleStep(int row,int step) {
+		if(row < 0 || row >= sequencer_rows.Length) return;
 		if(step < 0 || step >= steps) return;
 		
-		instrument_rows[instrument].data[step] = !instrument_rows[instrument].data[step];
-		instrument_rows[instrument].played[step] = false;
+		sequencer_rows[row].data[step] = !sequencer_rows[row].data[step];
+		sequencer_rows[row].played[step] = false;
 	}
 	
 	public float GetProgress() {
@@ -62,10 +65,18 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		current_time = 0.0f;
 		cached_audio = GetComponent<AudioSource>();
 		
-		if((steps > 0) && (instruments.Length > 0)) {
-			instrument_rows = new SequencerRow[instruments.Length];
-			for(int i = 0; i < instruments.Length; i++) {
-				instrument_rows[i] = new SequencerRow() { data = new bool[steps], played = new bool[steps] };
+		int num_mobs =  GameLogic.instance.mob_sprites.Length;
+		int num_instruments = instruments.Length;
+		
+		if((steps > 0) && (num_mobs > 0)) {
+			sequencer_rows = new SequencerRow[num_mobs];
+			for(int i = 0; i < num_mobs; i++) {
+				sequencer_rows[i] = new SequencerRow() { 
+					data = new bool[steps],
+					played = new bool[steps],
+					instrument = (num_instruments > 0) ? instruments[i % num_instruments] : null,
+					sprite = GameLogic.instance.mob_sprites[i]
+				};
 			}
 		}
 	}
@@ -80,25 +91,26 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			current_time -= steps;
 			step -= steps;
 			
-			foreach(SequencerRow row in instrument_rows) {
+			foreach(SequencerRow row in sequencer_rows) {
 				row.Reset();
 			}
 		}
 		
 		// play instruments
-		for(int i = 0; i < instruments.Length; i++) {
-			Instrument instrument = instruments[i];
-			SequencerRow row = instrument_rows[i];
+		for(int i = 0; i < sequencer_rows.Length; i++) {
+			SequencerRow row = sequencer_rows[i];
 			
 			if(!row.data[step]) continue;
 			if(row.played[step]) continue;
 			
 			row.played[step] = true;
 			
-			Color kill_color = GameLogic.instance.GetStepColor(step);
-			GameLogic.instance.KillMobs(kill_color);
+			Color kill_color = GameLogic.instance.GetStepColor(step,steps);
+			Sprite kill_sprite = row.sprite;
+			GameLogic.instance.KillMobs(kill_sprite,kill_color);
 			
-			AudioClip sound = instrument.GetRandomSound();
+			if(row.instrument == null) continue;
+			AudioClip sound = row.instrument.GetRandomSound();
 			
 			if(sound == null) continue;
 			cached_audio.PlayOneShot(sound);

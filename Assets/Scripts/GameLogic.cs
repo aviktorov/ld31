@@ -23,10 +23,10 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	private Transform base_transform;
 	
 	// getters
-	public Color GetStepColor(int time) {
+	public Color GetStepColor(int time,int steps) {
 		if(colors.Length == 0) return Color.black;
 		
-		int step = time / colors.Length;
+		int step = (int)Mathf.Floor((time * colors.Length) / (float)steps);
 		return colors[step % colors.Length];
 	}
 	
@@ -54,13 +54,14 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		return mob;
 	}
 	
-	public void KillMobs(Color color) {
+	public void KillMobs(Sprite sprite,Color color) {
 		GameObject[] mobs = GameObject.FindGameObjectsWithTag("Mob");
 		
 		for(int i = mobs.Length - 1; i >= 0; i--) {
 			SpriteRenderer mob_renderer = mobs[i].GetComponent<SpriteRenderer>();
 			if(mob_renderer == null) continue;
 			if(mob_renderer.color != color) continue;
+			if(mob_renderer.sprite != sprite) continue;
 			
 			Destroy(mobs[i]);
 		}
