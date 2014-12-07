@@ -67,6 +67,15 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		}
 	}
 	
+	// events
+	public void OnMobDeath() {
+		// TODO: scores?
+	}
+	
+	public void OnBaseHit() {
+		// TODO: base health
+	}
+	
 	// functions
 	private void Awake() {
 		current_time = 0.0f;

@@ -9,14 +9,20 @@ public class Mob : MonoBehaviour {
 	
 	// data
 	public float speed = 5.0f;
+	public GameObject death_fx = null;
 	
 	// components
 	private Rigidbody2D cached_body;
 	private Transform cached_transform;
 	private SpriteRenderer cached_renderer;
 	
+	// runtime
+	private bool base_hit;
+	
 	// funcions
 	private void Awake() {
+		base_hit = false;
+		
 		cached_body = GetComponent<Rigidbody2D>();
 		cached_transform = GetComponent<Transform>();
 		cached_renderer = GetComponent<SpriteRenderer>();
@@ -41,11 +47,21 @@ public class Mob : MonoBehaviour {
 	private void OnTriggerEnter2D(Collider2D collider) {
 		if(collider.gameObject.tag != "Player") return;
 		
-		// Destroy(gameObject);
-		// TODO: notify game logic about base collision
+		base_hit = true;
+		Destroy(gameObject);
 	}
 	
 	private void OnDestroy() {
-		// TODO: notify game logic about mob death
+		if(GameLogic.instance == null) return;
+		
+		GameLogic.instance.OnMobDeath();
+		
+		if(base_hit) {
+			GameLogic.instance.OnBaseHit();
+		}
+		
+		if(death_fx != null) {
+			GameObject.Instantiate(death_fx,cached_transform.position,Quaternion.identity);
+		}
 	}
 }
