@@ -41,7 +41,7 @@ public class Mob : MonoBehaviour {
 	private void OnTriggerEnter2D(Collider2D collider) {
 		if(collider.gameObject.tag != "Player") return;
 		
-		Destroy(gameObject);
+		// Destroy(gameObject);
 		// TODO: notify game logic about base collision
 	}
 	

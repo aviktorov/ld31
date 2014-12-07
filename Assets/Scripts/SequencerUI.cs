@@ -9,6 +9,7 @@ public class SequencerUI : MonoBehaviour {
 	// data
 	public GameObject button;
 	public GameObject bar;
+	public GameObject icon;
 	
 	// runtime
 	private float button_width;
@@ -26,6 +27,7 @@ public class SequencerUI : MonoBehaviour {
 	private void Start() {
 		if(button == null) return;
 		if(bar == null) return;
+		if(icon == null) return;
 		
 		RectTransform button_transform = button.GetComponent<RectTransform>();
 		
@@ -36,7 +38,19 @@ public class SequencerUI : MonoBehaviour {
 		button_height = button_transform.rect.height;
 		
 		// icons
-		// TODO: ui layout
+		for(int i = 0; i < num_rows; i++) {
+			float x = button_width * (-(num_steps / 2) - 1);
+			float y = button_height * (i - num_rows / 2);
+			
+			GameObject runtime = GameObject.Instantiate(icon) as GameObject;
+			RectTransform runtime_transform = runtime.transform as RectTransform;
+			runtime_transform.anchoredPosition = new Vector2(x,y);
+			
+			cached_transform.AddChild(runtime_transform);
+			
+			Image image = runtime.GetComponent<Image>();
+			image.sprite = Sequencer.instance.sequencer_rows[i].sprite;
+		}
 		
 		// toggles
 		for(int i = 0; i < num_rows; i++) {
@@ -75,7 +89,6 @@ public class SequencerUI : MonoBehaviour {
 	}
 	
 	private void LateUpdate() {
-		if(button == null) return;
 		if(bar == null) return;
 		
 		int half_steps = Sequencer.instance.steps / 2;
