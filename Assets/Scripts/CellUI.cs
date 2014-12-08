@@ -8,13 +8,16 @@ public class CellUI : MonoBehaviour {
 	// data
 	public Color base_color = Color.white;
 	public Color highlight_color = Color.white;
-	public float smoothness = 8.0f;
 	
 	public float highlight_add = 0.1f;
-	public float pressed_add = 0.2f;
+	
+	public float smoothness = 8.0f;
+	
+	public int step = 0;
+	public int row = 0;
+	public bool toggled = false;
 	
 	// components
-	private Transform cached_transform;
 	private Renderer cached_renderer;
 	private Renderer[] cached_highlighters;
 	
@@ -33,15 +36,14 @@ public class CellUI : MonoBehaviour {
 	
 	// functions
 	private void Awake() {
-		cached_transform = GetComponent<Transform>();
 		cached_renderer = GetComponent<Renderer>();
 		cached_highlighters = GetComponentsInChildren<Renderer>();
-		
-		target_color = base_color;
-		target_highlight_color = highlight_color.WithA(0.0f);
 	}
 	
 	private void Start() {
+		target_color = base_color;
+		target_highlight_color = highlight_color.WithA(0.0f);
+		
 		cached_renderer.material.color = target_color;
 		
 		foreach(Renderer highlighter in cached_highlighters) {
@@ -72,6 +74,7 @@ public class CellUI : MonoBehaviour {
 	}
 	
 	private void OnMouseDown() {
-		cached_renderer.material.color = base_color * (1.0f + pressed_add);
+		cached_renderer.material.color = Color.white;
+		//GameLogic.instance.ToggleNote(row,step);
 	}
 }
