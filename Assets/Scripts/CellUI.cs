@@ -75,5 +75,6 @@ public class CellUI : MonoBehaviour {
 	
 	private void OnMouseDown() {
 		cached_renderer.material.color = Color.white;
+		//GameLogic.instance.ToggleNote(row,step);
 	}
 }
