@@ -100,6 +100,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	}
 	
 	private void Update() {
+		if(GameLogic.instance.game_over) return;
 		
 		// delay
 		float bps = (tempo * 4.0f / 60.0f);
