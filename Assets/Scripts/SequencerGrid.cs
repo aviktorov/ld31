@@ -110,6 +110,7 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 	
 	private void Update() {
 		if(bar_transform == null) return;
+		if(GameLogic.instance.game_over) return;
 		
 		int num_steps = Sequencer.instance.steps;
 		float total_width = size * num_steps;

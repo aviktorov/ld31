@@ -33,6 +33,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	// runtime
 	private float current_time;
 	private Transform base_transform;
+	private Transform lightning_transform;
 	private Dictionary<int,Note> notes;
 	private List<Note> active_notes;
 	
@@ -63,7 +64,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		float angle = Random.Range(0.0f,360.0f) * Mathf.Deg2Rad;
 		
 		GameObject mob = GameObject.Instantiate(mob_prefab) as GameObject;
-		mob.transform.position = base_transform.position + new Vector3(Mathf.Cos(angle),Mathf.Sin(angle),0.0f) * spawn_radius;
+		mob.transform.position = base_transform.position + new Vector3(Mathf.Cos(angle),0.0f,Mathf.Sin(angle)) * spawn_radius;
 		
 		return mob;
 	}
@@ -78,7 +79,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			if(mob_renderer.sprite != sprite) continue;
 			
 			if(lightning_prefab == null) continue;
-			GameObject lightning = GameObject.Instantiate(lightning_prefab,base_transform.position,Quaternion.identity) as GameObject;
+			GameObject lightning = GameObject.Instantiate(lightning_prefab,lightning_transform.position,Quaternion.identity) as GameObject;
 			
 			LightningGeometry lightning_geometry = lightning.GetComponent<LightningGeometry>();
 			if(lightning_geometry == null) continue;
@@ -182,6 +183,9 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	private void Start() {
 		GameObject base_object = GameObject.FindWithTag("Player");
 		if(base_object) base_transform = base_object.transform;
+		
+		GameObject lightning_object = GameObject.FindWithTag("BaseLightning");
+		if(lightning_object) lightning_transform = lightning_object.transform;
 	}
 	
 	private void Update() {
