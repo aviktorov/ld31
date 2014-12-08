@@ -59,8 +59,8 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		
 		// icons
 		for(int i = 0; i < num_rows; i++) {
-			float x = size * i - offset_x;
-			float z = offset_z - size * (num_steps);
+			float x = offset_x - size * i;
+			float z = offset_z + size;
 			
 			GameObject runtime = GameObject.Instantiate(icon_prefab) as GameObject;
 			

@@ -28,7 +28,7 @@ public class Mob : MonoBehaviour {
 	}
 	
 	private void Start() {
-		Color color = GameLogic.instance.GetRandomColor();
+		Color color = GameLogic.instance.GetRandomMobColor();
 		
 		cached_renderer.color = color;
 		cached_renderer.sprite = GameLogic.instance.GetRandomMobSprite();

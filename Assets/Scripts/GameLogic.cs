@@ -23,7 +23,8 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	public int max_mob_moves = 10;
 	public bool game_over = false;
 	
-	public Color[] colors = new Color[] {
+	public Color[] colors;
+	public Color[] mob_colors = new Color[] {
 		Color.red,
 		Color.green,
 		Color.blue,
@@ -45,10 +46,10 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		return colors[step % colors.Length];
 	}
 	
-	public Color GetRandomColor() {
-		if(colors.Length == 0) return Color.black;
+	public Color GetRandomMobColor() {
+		if(mob_colors.Length == 0) return Color.black;
 		
-		return colors[Random.Range(0,colors.Length)];
+		return mob_colors[Random.Range(0,mob_colors.Length)];
 	}
 	
 	public Sprite GetRandomMobSprite() {
