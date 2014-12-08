@@ -31,11 +31,11 @@ public class CellUI : MonoBehaviour {
 	private void Start() {
 		target_color = color;
 		
-		cached_renderer.material.color = target_color;
+		cached_renderer.material.color = Color.clear;
 		
 		foreach(Renderer highlighter in cached_highlighters) {
 			if(highlighter == cached_renderer) continue;
-			highlighter.material.color = color.WithA(0.0f);
+			highlighter.material.color = Color.clear;
 		}
 	}
 	
@@ -44,7 +44,7 @@ public class CellUI : MonoBehaviour {
 		
 		foreach(Renderer highlighter in cached_highlighters) {
 			if(highlighter == cached_renderer) continue;
-			Color target_highlight_color = (toggled) ? color : color.WithA(0.0f);
+			Color target_highlight_color = (toggled) ? color : Color.clear;
 			
 			highlighter.material.color = Color.Lerp(highlighter.material.color,target_highlight_color,Time.deltaTime * smoothness);
 		}
