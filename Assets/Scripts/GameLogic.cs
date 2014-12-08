@@ -46,6 +46,13 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		return colors[step % colors.Length];
 	}
 	
+	public Color GetStepMobColor(int time,int steps) {
+		if(mob_colors.Length == 0) return Color.black;
+		
+		int step = (int)Mathf.Floor((time * mob_colors.Length) / (float)steps);
+		return mob_colors[step % mob_colors.Length];
+	}
+	
 	public Color GetRandomMobColor() {
 		if(mob_colors.Length == 0) return Color.black;
 		
@@ -66,6 +73,9 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		
 		GameObject mob = GameObject.Instantiate(mob_prefab) as GameObject;
 		mob.transform.position = base_transform.position + new Vector3(Mathf.Cos(angle),0.0f,Mathf.Sin(angle)) * spawn_radius;
+		
+		SphereCollider sphere = mob.GetComponent<SphereCollider>();
+		if(sphere) mob.transform.position += Vector3.up * sphere.radius;
 		
 		return mob;
 	}
@@ -168,7 +178,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		Note note = notes[id];
 		if(note.ghost) return;
 		
-		Color kill_color = GetStepColor(step,num_steps);
+		Color kill_color = GetStepMobColor(step,num_steps);
 		Sprite kill_sprite = Sequencer.instance.GetRowSprite(row);
 		
 		KillMobs(kill_sprite,kill_color);
