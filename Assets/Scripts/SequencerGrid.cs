@@ -9,6 +9,8 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 	// data
 	public GameObject cell_prefab = null;
 	public GameObject bar_prefab = null;
+	public GameObject icon_prefab = null;
+	
 	public float size = 1.0f;
 	
 	// components
@@ -52,26 +54,22 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		int num_rows = Sequencer.instance.sequencer_rows.Length;
 		int num_steps = Sequencer.instance.steps;
 		
-		// icons
-		
-		/*
-		for(int i = 0; i < num_rows; i++) {
-			float x = button_width * (-(num_steps / 2) - 1);
-			float y = button_height * (i - num_rows / 2);
-			
-			GameObject runtime = GameObject.Instantiate(icon) as GameObject;
-			RectTransform runtime_transform = runtime.transform as RectTransform;
-			runtime_transform.anchoredPosition = new Vector2(x,y);
-			
-			cached_transform.AddChild(runtime_transform);
-			
-			Image image = runtime.GetComponent<Image>();
-			image.sprite = Sequencer.instance.sequencer_rows[i].sprite;
-		}
-		/**/
-		
-		float offset_z = size * (num_steps - 1) * 0.5f;
 		float offset_x = size * (num_rows - 1) * 0.5f;
+		float offset_z = size * (num_steps - 1) * 0.5f;
+		
+		// icons
+		for(int i = 0; i < num_rows; i++) {
+			float x = offset_x - size * i;
+			float z = offset_z - size * (num_steps + 1);
+			
+			GameObject runtime = GameObject.Instantiate(icon_prefab) as GameObject;
+			
+			runtime.transform.SetParent(cached_transform);
+			runtime.transform.localPosition = new Vector3(x,0.0f,z);
+			
+			Texture2D icon = Sequencer.instance.sequencer_rows[i].sprite.texture;
+			runtime.renderer.material.SetTexture("_MainTex",icon);
+		}
 		
 		// cells
 		for(int i = 0; i < num_rows; i++) {
