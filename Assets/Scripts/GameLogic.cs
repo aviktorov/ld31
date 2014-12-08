@@ -90,8 +90,8 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		}
 	}
 	
-	public void ToggleNote(int row,int step) {
-		Sequencer.instance.ToggleNote(row,step);
+	public void SetNote(int row,int step,bool enabled) {
+		Sequencer.instance.SetNote(row,step,enabled);
 		
 		int num_steps = Sequencer.instance.steps;
 		int id = row * num_steps + step;
@@ -126,8 +126,8 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		GameObject.Destroy(base_transform.gameObject);
 		game_over = true;
 		
-		DialogUI.instance.SetEnabled(true);
-		SequencerUI.instance.SetEnabled(false);
+		// TODO: lose screen
+		// DialogUI.instance.SetEnabled(true);
 	}
 	
 	public void OnSequencerBar() {
@@ -151,8 +151,9 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			int row = id / num_steps;
 			int step = id % num_steps;
 			
-			SequencerGrid.instance.ToggleNote(id);
-			Sequencer.instance.ToggleNote(row,step);
+			SequencerGrid.instance.SetNote(id,false);
+			Sequencer.instance.SetNote(row,step,false);
+			notes.Remove(id);
 		}
 	}
 	

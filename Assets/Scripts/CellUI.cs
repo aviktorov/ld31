@@ -68,6 +68,6 @@ public class CellUI : MonoBehaviour {
 		}
 		
 		toggled = !toggled;
-		GameLogic.instance.ToggleNote(row,step);
+		GameLogic.instance.SetNote(row,step,toggled);
 	}
 }

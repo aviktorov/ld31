@@ -19,12 +19,19 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 	private Dictionary<int,CellUI> grid;
 	
 	// interface
-	public void ToggleNote(int id) {
+	public void SetNote(int id,bool enabled) {
 		if(grid.ContainsKey(id) == false) return;
+		
+		CellUI cell = grid[id];
+		cell.toggled = enabled;
 	}
 	
 	public void SetGhostNote(int id,bool enabled) {
 		if(grid.ContainsKey(id) == false) return;
+		
+		// TODO: ghost note visualisation
+		CellUI cell = grid[id];
+		cell.toggled = false;
 	}
 	
 	public void SetEnabled(bool enabled) {

@@ -59,6 +59,14 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		sequencer_rows[row].played[step] = (step < current_time);
 	}
 	
+	public void SetNote(int row,int step,bool enabled) {
+		if(row < 0 || row >= sequencer_rows.Length) return;
+		if(step < 0 || step >= steps) return;
+		
+		sequencer_rows[row].data[step] = enabled;
+		sequencer_rows[row].played[step] = enabled && (step < current_time);
+	}
+	
 	public float GetProgress() {
 		return Mathf.Clamp01(current_time / steps);
 	}
