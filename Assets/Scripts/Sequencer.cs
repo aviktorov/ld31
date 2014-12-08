@@ -56,7 +56,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		if(step < 0 || step >= steps) return;
 		
 		sequencer_rows[row].data[step] = !sequencer_rows[row].data[step];
-		sequencer_rows[row].played[step] = (current_time < step);
+		sequencer_rows[row].played[step] = (step < current_time);
 	}
 	
 	public float GetProgress() {

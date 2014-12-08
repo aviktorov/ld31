@@ -63,19 +63,19 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		}
 		/**/
 		
-		float offset_x = size * (num_steps - 1) * 0.5f;
-		float offset_y = size * (num_rows - 1) * 0.5f;
+		float offset_z = size * (num_steps - 1) * 0.5f;
+		float offset_x = size * (num_rows - 1) * 0.5f;
 		
 		// cells
 		for(int i = 0; i < num_rows; i++) {
-			float y = size * i - offset_y;
+			float x = offset_x - size * i;
 			
 			for(int j = 0; j < num_steps; j++) {
-				float x = size * j - offset_x;
+				float z = offset_z - size * j;
 				
 				GameObject runtime = GameObject.Instantiate(cell_prefab) as GameObject;
 				runtime.transform.SetParent(cached_transform);
-				runtime.transform.localPosition = new Vector3(x,0.0f,y);
+				runtime.transform.localPosition = new Vector3(-x,0.0f,z);
 				
 				CellUI cell = runtime.GetComponent<CellUI>();
 				if(cell == null) continue;
@@ -101,7 +101,7 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		bar_transform.localPosition = Vector3.zero;
 	}
 	
-	private void LateUpdate() {
+	private void Update() {
 		if(bar_transform == null) return;
 		
 		int num_steps = Sequencer.instance.steps;
