@@ -113,7 +113,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			last.ghost = true;
 			
 			active_notes.RemoveAt(0);
-			SequencerUI.instance.SetGhostNote(last.id,true);
+			SequencerGrid.instance.SetGhostNote(last.id,true);
 		}
 	}
 	
@@ -145,8 +145,14 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		}
 		
 		// note cleanup
+		int num_steps = Sequencer.instance.steps;
+		
 		foreach(int id in remove_list) {
-			SequencerUI.instance.ToggleNote(id);
+			int row = id / num_steps;
+			int step = id % num_steps;
+			
+			SequencerGrid.instance.ToggleNote(id);
+			Sequencer.instance.ToggleNote(row,step);
 		}
 	}
 	

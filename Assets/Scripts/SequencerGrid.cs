@@ -8,12 +8,14 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 	
 	// data
 	public GameObject cell_prefab = null;
+	public GameObject bar_prefab = null;
 	public float size = 1.0f;
 	
 	// components
 	private Transform cached_transform;
 	
 	// runtime
+	private Transform bar_transform;
 	private Dictionary<int,CellUI> grid;
 	
 	// interface
@@ -61,17 +63,19 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		}
 		/**/
 		
+		float offset_x = size * (num_steps - 1) * 0.5f;
+		float offset_y = size * (num_rows - 1) * 0.5f;
+		
 		// cells
 		for(int i = 0; i < num_rows; i++) {
-			float y = size * i;
+			float y = size * i - offset_y;
 			
 			for(int j = 0; j < num_steps; j++) {
-				float x = size * j;
+				float x = size * j - offset_x;
 				
 				GameObject runtime = GameObject.Instantiate(cell_prefab) as GameObject;
-				Transform runtime_transform = runtime.transform;
-				runtime_transform.SetParent(cached_transform);
-				runtime_transform.localPosition = new Vector3(x,0.0f,y);
+				runtime.transform.SetParent(cached_transform);
+				runtime.transform.localPosition = new Vector3(x,0.0f,y);
 				
 				CellUI cell = runtime.GetComponent<CellUI>();
 				if(cell == null) continue;
@@ -79,7 +83,7 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 				cell.row = i;
 				cell.step = j;
 				cell.toggled = false;
-				cell.base_color = GameLogic.instance.GetStepColor(j,num_steps);
+				cell.color = GameLogic.instance.GetStepColor(j,num_steps);
 				
 				int id = i * num_steps + j;
 				grid.Add(id,cell);
@@ -87,13 +91,23 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		}
 		
 		// bar
-		/*
-		GameObject bar_runtime = GameObject.Instantiate(bar) as GameObject;
-		bar_transform = bar_runtime.transform as RectTransform;
-		bar_transform.sizeDelta = bar_transform.sizeDelta.WithY(num_rows * button_height);
-		bar_transform.anchoredPosition = bar_transform.anchoredPosition.WithY(-button_height / 2);
+		GameObject bar_runtime = GameObject.Instantiate(bar_prefab) as GameObject;
+		bar_transform = bar_runtime.transform;
 		
-		cached_transform.AddChild(bar_transform);
-		/**/
+		Vector3 scale = bar_transform.localScale;
+		
+		bar_transform.SetParent(cached_transform);
+		bar_transform.localScale = scale.WithY(num_rows * size);
+		bar_transform.localPosition = Vector3.zero;
+	}
+	
+	private void LateUpdate() {
+		if(bar_transform == null) return;
+		
+		int num_steps = Sequencer.instance.steps;
+		float total_width = size * num_steps;
+		float current_position = Sequencer.instance.GetProgress() * size * num_steps;
+		
+		bar_transform.localPosition = Vector3.zero.WithZ(current_position - total_width * 0.5f);
 	}
 }
