@@ -108,6 +108,6 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		float total_width = size * num_steps;
 		float current_position = Sequencer.instance.GetProgress() * size * num_steps;
 		
-		bar_transform.localPosition = Vector3.zero.WithZ(current_position - total_width * 0.5f);
+		bar_transform.localPosition = Vector3.zero.WithZ(total_width * 0.5f - current_position);
 	}
 }
