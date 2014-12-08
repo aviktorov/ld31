@@ -5,8 +5,8 @@ using System.Collections;
  */
 [System.Serializable]
 public class Instrument {
+	public string name;
 	public AudioClip[] sounds;
-	public int mob_id = -1;
 	public float volume = 1.0f;
 	
 	public AudioClip GetRandomSound() {
@@ -43,6 +43,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	
 	// components
 	private AudioSource cached_audio;
+	private AudioEchoFilter cached_echo;
 	
 	// runtime
 	[System.NonSerialized]
@@ -55,7 +56,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 		if(step < 0 || step >= steps) return;
 		
 		sequencer_rows[row].data[step] = !sequencer_rows[row].data[step];
-		sequencer_rows[row].played[step] = false;
+		sequencer_rows[row].played[step] = (current_time < step);
 	}
 	
 	public float GetProgress() {
@@ -70,17 +71,20 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	private void Awake() {
 		current_time = 0.0f;
 		cached_audio = GetComponent<AudioSource>();
+		cached_echo = Camera.main.GetComponent<AudioEchoFilter>();
 		
 		int num_mobs =  GameLogic.instance.mob_sprites.Length;
 		int num_instruments = instruments.Length;
+		int num_rows = num_mobs * rows_per_mob;
 		
-		if((steps > 0) && (num_mobs > 0)) {
-			sequencer_rows = new SequencerRow[num_mobs * rows_per_mob];
-			for(int i = 0; i < num_mobs * rows_per_mob; i++) {
+		if((steps > 0) && (num_rows > 0)) {
+			sequencer_rows = new SequencerRow[num_rows];
+			
+			for(int i = 0; i < num_rows; i++) {
 				sequencer_rows[i] = new SequencerRow() { 
 					data = new bool[steps],
 					played = new bool[steps],
-					instrument = (num_instruments > 0) ? instruments[i % num_instruments] : null,
+					instrument = (num_instruments > 0) ? instruments[(num_rows - 1 - i) % num_instruments] : null,
 					sprite = GameLogic.instance.mob_sprites[i / rows_per_mob]
 				};
 			}
@@ -89,8 +93,12 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	
 	private void Update() {
 		
+		// delay
+		float bps = (tempo * 4.0f / 60.0f);
+		cached_echo.delay = 1000.0f * (4.0f / bps);
+		
 		// step
-		current_time += Time.deltaTime * (tempo * 4.0f / 60.0f);
+		current_time += Time.deltaTime * bps;
 		int step = (int)Mathf.Floor(current_time);
 		
 		while(step >= steps) {
