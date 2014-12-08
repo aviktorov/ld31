@@ -22,6 +22,11 @@ public class CellUI : MonoBehaviour {
 	// runtime
 	private Color target_color;
 	
+	// interface
+	public void Highlight() {
+		cached_renderer.material.SetColor("_TintColor",color + Color.white * highlight_add);
+	}
+	
 	// functions
 	private void Awake() {
 		cached_renderer = GetComponent<Renderer>();

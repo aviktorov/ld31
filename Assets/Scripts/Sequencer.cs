@@ -138,6 +138,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			if(sound == null) continue;
 			
 			cached_audio.PlayOneShot(sound,instrument.volume);
+			SequencerGrid.instance.HighlightCell(i * steps + step);
 		}
 	}
 }
