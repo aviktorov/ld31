@@ -141,8 +141,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		GameObject.Destroy(base_transform.gameObject);
 		game_over = true;
 		
-		// TODO: lose screen
-		// DialogUI.instance.SetEnabled(true);
+		DialogUI.instance.SetEnabled(true);
 	}
 	
 	public void OnSequencerBar() {

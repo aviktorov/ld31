@@ -15,11 +15,12 @@ public class DialogUI : MonoSingleton<DialogUI> {
 	
 	// events
 	public void OnRestart() {
-		Application.LoadLevel("SequencerPrototype");
+		Application.LoadLevel("Game");
 	}
 	
 	// functions
 	private void Awake() {
 		cached_transform = GetComponent<RectTransform>();
+		SetEnabled(false);
 	}
 }
