@@ -86,8 +86,11 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		for(int i = mobs.Length - 1; i >= 0; i--) {
 			SpriteRenderer mob_renderer = mobs[i].GetComponent<SpriteRenderer>();
 			if(mob_renderer == null) continue;
-			if(mob_renderer.color != color) continue;
 			if(mob_renderer.sprite != sprite) continue;
+			
+			Mob mob = mobs[i].GetComponent<Mob>();
+			if(mob == null) continue;
+			if(mob.base_color != color) continue;
 			
 			if(lightning_prefab == null) continue;
 			GameObject lightning = GameObject.Instantiate(lightning_prefab,lightning_transform.position,Quaternion.identity) as GameObject;
@@ -138,8 +141,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 		GameObject.Destroy(base_transform.gameObject);
 		game_over = true;
 		
-		// TODO: lose screen
-		// DialogUI.instance.SetEnabled(true);
+		DialogUI.instance.SetEnabled(true);
 	}
 	
 	public void OnSequencerBar() {
