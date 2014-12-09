@@ -17,13 +17,19 @@ public class Mob : MonoBehaviour {
 	private SpriteRenderer cached_renderer;
 	private ParticleSystem cached_particles;
 	
-	// runtime
-	private bool base_hit;
+	// interface
+	public void Kill() {
+		GameLogic.instance.OnMobDeath();
+		
+		if(death_fx != null) {
+			GameObject.Instantiate(death_fx,cached_transform.position,Quaternion.identity);
+		}
+		
+		Destroy(gameObject);
+	}
 	
 	// funcions
 	private void Awake() {
-		base_hit = false;
-		
 		cached_body = GetComponent<Rigidbody>();
 		cached_transform = GetComponent<Transform>();
 		cached_renderer = GetComponent<SpriteRenderer>();
@@ -72,21 +78,7 @@ public class Mob : MonoBehaviour {
 	private void OnTriggerEnter(Collider collider) {
 		if(collider.gameObject.tag != "Player") return;
 		
-		base_hit = true;
-		Destroy(gameObject);
-	}
-	
-	private void OnDestroy() {
-		if(GameLogic.instance == null) return;
-		
-		GameLogic.instance.OnMobDeath();
-		
-		if(base_hit) {
-			GameLogic.instance.OnBaseHit();
-		}
-		
-		if(death_fx != null) {
-			GameObject.Instantiate(death_fx,cached_transform.position,Quaternion.identity);
-		}
+		GameLogic.instance.OnBaseHit();
+		Kill();
 	}
 }

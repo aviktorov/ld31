@@ -105,7 +105,7 @@ public class GameLogic : MonoSingleton<GameLogic> {
 			lightning_geometry.target = mobs[i].transform;
 			
 			// hope it'll be destroyed one frame later
-			Destroy(mobs[i]);
+			mob.Kill();
 		}
 	}
 	
