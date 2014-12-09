@@ -22,6 +22,11 @@ public class CellUI : MonoBehaviour {
 	// runtime
 	private Color target_color;
 	
+	// interface
+	public void Highlight() {
+		cached_renderer.material.SetColor("_TintColor",color + Color.white * highlight_add);
+	}
+	
 	// functions
 	private void Awake() {
 		cached_renderer = GetComponent<Renderer>();
@@ -31,7 +36,7 @@ public class CellUI : MonoBehaviour {
 	private void Start() {
 		target_color = color;
 		
-		cached_renderer.material.color = Color.clear;
+		cached_renderer.material.SetColor("_TintColor",Color.clear);
 		
 		foreach(Renderer highlighter in cached_highlighters) {
 			if(highlighter == cached_renderer) continue;
@@ -40,7 +45,9 @@ public class CellUI : MonoBehaviour {
 	}
 	
 	private void Update() {
-		cached_renderer.material.color = Color.Lerp(cached_renderer.material.color,target_color,Time.deltaTime * smoothness);
+		Color main_color = cached_renderer.material.GetColor("_TintColor");
+		main_color = Color.Lerp(main_color,target_color,Time.deltaTime * smoothness);
+		cached_renderer.material.SetColor("_TintColor",main_color);
 		
 		foreach(Renderer highlighter in cached_highlighters) {
 			if(highlighter == cached_renderer) continue;

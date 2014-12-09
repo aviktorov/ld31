@@ -7,6 +7,8 @@ public class Mob : MonoBehaviour {
 	
 	// data
 	public GameObject death_fx = null;
+	public GameObject spawn_fx = null;
+	public float smoothness = 1.0f;
 	
 	// components
 	private Rigidbody cached_body;
@@ -16,6 +18,7 @@ public class Mob : MonoBehaviour {
 	
 	// runtime
 	private bool base_hit;
+	private Color base_color;
 	
 	// funcions
 	private void Awake() {
@@ -28,15 +31,22 @@ public class Mob : MonoBehaviour {
 	}
 	
 	private void Start() {
-		Color color = GameLogic.instance.GetRandomMobColor();
+		base_color = GameLogic.instance.GetRandomMobColor();
 		
-		cached_renderer.color = color;
+		cached_renderer.color = base_color.WithA(0.0f);
 		cached_renderer.sprite = GameLogic.instance.GetRandomMobSprite();
 		
-		cached_particles.startColor = color;
+		cached_particles.startColor = base_color;
+		
+		if(spawn_fx != null) {
+			GameObject.Instantiate(spawn_fx,cached_transform.position,Quaternion.identity);
+		}
 	}
 	
 	private void Update() {
+		
+		cached_renderer.color = Color.Lerp(cached_renderer.color,base_color,Time.deltaTime * smoothness);
+		
 		if(cached_body == null) return;
 		cached_body.velocity = cached_body.velocity.WithXZ(0.0f,0.0f);
 		

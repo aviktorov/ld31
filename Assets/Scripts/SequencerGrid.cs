@@ -36,6 +36,24 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		cell.toggled = false;
 	}
 	
+	public void HighlightCell(int id) {
+		int num_rows = Sequencer.instance.sequencer_rows.Length;
+		int num_steps = Sequencer.instance.steps;
+		
+		int row = id / num_steps;
+		int step = id % num_steps;
+		
+		for(int i = 0; i < num_rows; i++) {
+			int new_id = i * num_steps + step;
+			grid[new_id].Highlight();
+		}
+		
+		for(int i = 0; i < num_steps; i++) {
+			int new_id = row * num_steps + i;
+			grid[new_id].Highlight();
+		}
+	}
+	
 	public void SetEnabled(bool enabled) {
 		foreach(Transform child in cached_transform) {
 			child.gameObject.SetActive(enabled);
@@ -82,7 +100,7 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 				runtime.transform.SetParent(cached_transform);
 				runtime.transform.localPosition = new Vector3(x,0.0f,z);
 				
-				CellUI cell = runtime.GetComponent<CellUI>();
+				CellUI cell = runtime.GetComponentInChildren<CellUI>();
 				if(cell == null) continue;
 				
 				cell.row = i;

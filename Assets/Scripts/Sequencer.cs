@@ -100,6 +100,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 	}
 	
 	private void Update() {
+		if(GameLogic.instance.game_over) return;
 		
 		// delay
 		float bps = (tempo * 4.0f / 60.0f);
@@ -137,6 +138,7 @@ public class Sequencer : MonoSingleton<Sequencer> {
 			if(sound == null) continue;
 			
 			cached_audio.PlayOneShot(sound,instrument.volume);
+			SequencerGrid.instance.HighlightCell(i * steps + step);
 		}
 	}
 }
