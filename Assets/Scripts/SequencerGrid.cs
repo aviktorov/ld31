@@ -106,7 +106,7 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 				cell.row = i;
 				cell.step = j;
 				cell.toggled = false;
-				cell.color = GameLogic.instance.GetStepColor(j,num_steps);
+				cell.color = GameLogic.instance.GetStepColor(i,j,num_steps);
 				
 				int id = i * num_steps + j;
 				grid.Add(id,cell);
