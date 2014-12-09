@@ -14,6 +14,7 @@ public class CellUI : MonoBehaviour {
 	public int step = 0;
 	public int row = 0;
 	public bool toggled = false;
+	public bool ghost = false;
 	
 	// components
 	private Renderer cached_renderer;
@@ -52,6 +53,7 @@ public class CellUI : MonoBehaviour {
 		foreach(Renderer highlighter in cached_highlighters) {
 			if(highlighter == cached_renderer) continue;
 			Color target_highlight_color = (toggled) ? color : Color.clear;
+			if(ghost) target_highlight_color = target_highlight_color.WithA(0.3f);
 			
 			highlighter.material.color = Color.Lerp(highlighter.material.color,target_highlight_color,Time.deltaTime * smoothness);
 		}

@@ -26,14 +26,14 @@ public class SequencerGrid : MonoSingleton<SequencerGrid> {
 		
 		CellUI cell = grid[id];
 		cell.toggled = enabled;
+		cell.ghost = false;
 	}
 	
 	public void SetGhostNote(int id,bool enabled) {
 		if(grid.ContainsKey(id) == false) return;
 		
-		// TODO: ghost note visualisation
 		CellUI cell = grid[id];
-		cell.toggled = false;
+		cell.ghost = true;
 	}
 	
 	public void HighlightCell(int id) {
