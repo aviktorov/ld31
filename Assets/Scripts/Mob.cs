@@ -9,6 +9,7 @@ public class Mob : MonoBehaviour {
 	public GameObject death_fx = null;
 	public GameObject spawn_fx = null;
 	public float smoothness = 1.0f;
+	public Color base_color;
 	
 	// components
 	private Rigidbody cached_body;
@@ -18,7 +19,6 @@ public class Mob : MonoBehaviour {
 	
 	// runtime
 	private bool base_hit;
-	private Color base_color;
 	
 	// funcions
 	private void Awake() {
