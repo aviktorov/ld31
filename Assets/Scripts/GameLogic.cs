@@ -39,11 +39,15 @@ public class GameLogic : MonoSingleton<GameLogic> {
 	private List<Note> active_notes;
 	
 	// getters
-	public Color GetStepColor(int time,int steps) {
+	public Color GetStepColor(int row,int step,int steps) {
 		if(colors.Length == 0) return Color.black;
 		
-		int step = (int)Mathf.Floor((time * colors.Length) / (float)steps);
-		return colors[step % colors.Length];
+		int adjusted_step = (int)Mathf.Floor((step * colors.Length) / (float)steps);
+		int adjusted_row = row / mob_sprites.Length;
+		
+		float mob_factor = ((adjusted_row % 2) == 0) ? 0.9f : 1.0f;
+		
+		return colors[adjusted_step % colors.Length] * mob_factor;
 	}
 	
 	public Color GetStepMobColor(int time,int steps) {
